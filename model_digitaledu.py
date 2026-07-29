@@ -5,8 +5,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score
 
-N_NEIGHBORS = 10
-TEST_SIZE = 0.25
+N_NEIGHBORS = 7
+TEST_SIZE = 0.50
 
 def train_testing(x, y):
 
@@ -40,7 +40,7 @@ def train_testing(x, y):
     y_pred = classifier.predict(x_test)
     # accuracy_score: proporción de predicciones correctas (0.0 a 1.0, se multiplica por 100)
     print(f'Porcentaje de resultados predichos correctamente: { round(accuracy_score(y_test, y_pred) * 100, 2) }%')
-    # Ej: Porcentaje de resultados predichos correctamente: 79½
+    # Ej: Porcentaje de resultados predichos correctamente: 79%
 
     print('Confusion matrix:')
 
@@ -54,11 +54,11 @@ def train_testing(x, y):
     print(f"""
     RESULTADOS:
     {"-" * 40  }
-    TN: {true_negative} verdaderos negativos (murió y se predijo muerte)
-    TP: {true_positive} verdaderos positivos (sobrevivió y se predijo supervivencia)
+    TN: {true_negative} verdaderos negativos (NO inscritos)
+    TP: {true_positive} verdaderos positivos (SI Inscritos)
 
-    FP: {false_positive} falsos positivos (murió y se predijo supervivencia)
-    FN: {false_negative} falsos negativos (sobrevivió y se predijo muerte)
+    FP: {false_positive} falsos positivos (Falso SI inscrito)
+    FN: {false_negative} falsos negativos (Falso NO inscrito)
     {"-" * 40  }
 
     """)
@@ -68,6 +68,8 @@ def train_testing(x, y):
 # Carga de datos 
 df = pd.read_csv('cleaned/digitaledu_cleaned.csv')
 
+x = df.drop('result', axis=1)
+y = df['result']
 
-# train_testing(x, y)
+train_testing(x, y)
 

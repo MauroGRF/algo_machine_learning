@@ -10,14 +10,18 @@ Espacio de prácticas de Machine Learning con **pandas** y **scikit-learn**. El 
 machine_learning/
 ├── data/                        # Datos crudos (originales)
 │   ├── titanic.csv
-│   └── digitaledu.csv
+│   ├── digitaledu.csv
+│   └── heart_disease_risk_2026.csv
 ├── cleaned/                     # Datos limpios (resultado de la limpieza)
-│   └── titanic_cleaned.csv
+│   ├── titanic_cleaned.csv
+│   └── heart_disease_risk_2026_cleaned.csv
 ├── explanations/                # Material de explicaciones (futuro)
 ├── titanic_dataclean.py         # Script de limpieza de datos del Titanic
 ├── digitaledu_dataclean.py      # Script de limpieza de datos de DigitalEdu
+├── heartache_dataclean.py       # Script de limpieza de datos de enfermedades cardíacas
 ├── model_titanic.py             # Modelo KNN para predecir supervivencia en Titanic
 ├── model_digitaledu.py          # Modelo KNN para predecir en DigitalEdu
+├── model_heartache.py           # Modelo Árbol de Decisión para predecir enfermedades cardíacas
 ├── pyproject.toml               # Dependencias del proyecto (pandas, sklearn, streamlit, matplotlib)
 └── README.md
 ```
@@ -70,6 +74,13 @@ data/*.csv  →  *_dataclean.py  →  cleaned/*.csv  →  model_*.py  →  Evalu
 |---------|-------------|---------|
 | `df[df['col'] == valor]` | Filtra filas donde la columna cumple una condición | `df[df['Pclass'] == 1]` |
 
+### Iteración sobre columnas
+
+| Función | Descripción | Ejemplo |
+|---------|-------------|---------|
+| `for col in df.columns:` | Itera sobre todas las columnas del DataFrame | `for col in ['col1', 'col2']:` |
+| `df.apply(func)` | Aplica una función a cada elemento de una columna | `df['Sex'] = df['Sex'].apply(fill_sex)` |
+
 ---
 
 ## Funciones de scikit-learn utilizadas
@@ -88,8 +99,31 @@ data/*.csv  →  *_dataclean.py  →  cleaned/*.csv  →  model_*.py  →  Evalu
 | Función | Módulo | Descripción |
 |---------|--------|-------------|
 | `KNeighborsClassifier()` | `sklearn.neighbors` | Clasificador K-Vecinos Más Cercanos (KNN) |
+| `DecisionTreeClassifier()` | `sklearn.tree` | Clasificador por Árbol de Decisión |
 | `classifier.fit()` | - | Entrena el modelo con los datos de entrenamiento |
 | `classifier.predict()` | - | Genera predicciones sobre el set de prueba |
+
+#### ¿Qué es un Árbol de Decisión?
+
+Un árbol de decisión funciona como un **flujo de preguntas tipo "sí/no"**. En cada nodo del árbol se evalúa una condición sobre una feature, y según el resultado se sigue por una rama u otra hasta llegar a una hoja que contiene la predicción.
+
+**Ejemplo simplificado:**
+```
+¿Colesterol > 200?
+├── Sí → ¿Edad > 50?
+│        ├── Sí → ENFERMO
+│        └── No → SANO
+└── No → SANO
+```
+
+**Parámetros importantes:**
+- `max_depth`: Controla la profundidad máxima del árbol. Un valor bajo evita overfitting (el árbol memoriza los datos de entrenamiento pero falla con nuevos datos)
+- `min_samples_split`: Número mínimo de muestras necesarias para dividir un nodo. Valores altos generan árboles más simples
+- `random_state`: Semilla para que los resultados sean reproducibles
+
+> **¿Cuándo usar Árbol de Decisión vs KNN?** 
+> - KNN funciona bien con datos de baja dimensionalidad y cuando no hay una relación clara entre features
+> - Árbol de Decisión es más interpretable (puedes ver las reglas que sigue) y funciona bien cuando hay features mixtas (numéricas + categóricas)
 
 ### Métricas de evaluación
 
@@ -123,8 +157,14 @@ pip install -e .
 # 2. Limpiar datos del Titanic
 python titanic_dataclean.py
 
-# 3. Entrenar y evaluar el modelo
+# 3. Entrenar y evaluar el modelo KNN (Titanic)
 python model_titanic.py
+
+# 4. Limpiar datos de enfermedades cardíacas
+python heartache_dataclean.py
+
+# 5. Entrenar y evaluar el modelo Árbol de Decisión (Enfermedades cardíacas)
+python model_heartache.py
 ```
 
 ---
